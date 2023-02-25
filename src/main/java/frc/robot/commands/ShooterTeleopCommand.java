@@ -41,26 +41,28 @@ public class ShooterTeleopCommand extends CommandBase {
 			// 	Robot.shooter.setStateReving();
 			// 	m_OI.rumbleDriver(0.3);
 			if (!Robot.shooter.readyToFire()) {
-				//Robot.shooter.setStateReving();
-				Robot.shooter.setState(State.REVING_FAR);
+				Robot.shooter.setStateReving();
+				//Robot.shooter.setState(State.REVING_FAR);
 				m_OI.rumbleDriver(0);
 			} else {
 				//Robot.shooter.setStateShooting();
 				Robot.shooter.setState(State.SHOOTING_FAR);
+				Robot.shooter.setOutput(0.5);
 				m_OI.rumbleDriver(0);
 			}
+			
 		} else {
 			m_OI.rumbleDriver(0);
 			Robot.shooter.setState(Shooter.State.STOWED);
 		}
-		// if(m_OI.getLeftBumperDriver()){
-		// 	Robot.shooter.setState(State.REVING_FAR);
-		// 	//Robot.shooter.setOutput(0.5);
-		// 	// Robot.shooter.setOutput(m_OI.getYLeftDriver());
-		// }else{
-		// 	Robot.shooter.setState(Shooter.State.STOWED);
-		// 	Robot.shooter.setOutput(0);
-		// }
+		if(m_OI.getLeftBumperDriver()){
+			Robot.shooter.setState(State.REVING_FAR);
+			Robot.shooter.setOutput(0.5);
+			// Robot.shooter.setOutput(m_OI.getYLeftDriver());
+		}else{
+			Robot.shooter.setState(Shooter.State.STOWED);
+			Robot.shooter.setOutput(0);
+		}
 	}
 
 	// Called once the command ends or is interrupted.

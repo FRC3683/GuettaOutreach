@@ -344,11 +344,11 @@ public class DriveTrain extends SubsystemBase {
 
 	// send data to dasboard for drivers to see
 	private void sendToDashboard() {
-	//	headingEntry.setDouble(getHeading());
-		encLeftEntry.setDouble(getLeftRaw());
-		encRightEntry.setDouble(getRightRaw());
-		offsetEntry.setDouble(offsetHeadingAngle);
-		stateEntry.setString(state.getName());
+		// headingEntry.setDouble(getHeading());
+		// encLeftEntry .setDouble(getLeftRaw());
+		// encRightEntry.setDouble(getRightRaw());
+		// offsetEntry.setDouble(offsetHeadingAngle);
+		// stateEntry.setString(state.getName());
 	}
 
 	public DifferentialDriveKinematics getKinematics() {

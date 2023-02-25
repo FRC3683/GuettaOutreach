@@ -57,6 +57,7 @@ public class Shooter extends SubsystemBase {
     private State currentState;
     
     public enum State {
+        MANUAL_DISTANCE("MANUAL_DISTANCE"),
         DISABLED("DISABLED"),
         STOWED("STOWED"), 
         FINDING_DISTANCE("FINDING_DISTANCE"),
@@ -85,20 +86,18 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setStateReving() {
-        if(inNearShootingRange())
-            setState(State.REVING_NEAR);
-        else if(inFarShootingRange()) {
-            setState(State.REVING_FAR);
-        }
+        
+            setState(State.MANUAL_DISTANCE);
+        
+        
     }
 
     public void setStateShooting() {
-        if(inNearShootingRange())
+        
             setState(State.SHOOTING_NEAR);
-        else if(inFarShootingRange()) {
-            setState(State.SHOOTING_FAR);
+    
         }
-    }
+    
 
     private ShuffleboardTab tab;
     private NetworkTableEntry currentFlywheelSpeedEntry;
@@ -129,11 +128,11 @@ public class Shooter extends SubsystemBase {
         readyCounter = 0;
 
         //PID = new PIDController(Constants.shooterP, Constants.shooterI, Constants.shooterD);
-        motor1.config_kP(0, Constants.shooterP, 10);
-        motor1.config_kI(0, Constants.shooterI, 10);
-        motor1.config_kD(0, Constants.shooterD, 10);
-        motor1.config_kF(0, Constants.shooterV, 10);
-        motor1.config_IntegralZone(0, Constants.shooterIZone, 10);
+        motor1.config_kP(1, Constants.shooterP, 10);
+        motor1.config_kI(1, Constants.shooterI, 10);
+        motor1.config_kD(1, Constants.shooterD, 10);
+        motor1.config_kF(1, Constants.shooterV, 10);
+        motor1.config_IntegralZone(1, Constants.shooterIZone, 10);
 
         readyFlag = false;
 
@@ -166,6 +165,9 @@ public class Shooter extends SubsystemBase {
 
     private void handleStates() {
         switch (currentState) {
+
+        case MANUAL_DISTANCE:
+            handleMANUAL_DISTANCE();
         case DISABLED:
             handleDISABLED();
             break;
@@ -215,7 +217,7 @@ public class Shooter extends SubsystemBase {
     }
 
     private void hoodFar() {
-        hoodPiston.set(true);
+        hoodPiston.set(false);
     }
 
     private double getRadPerSecFromDistance(double distance) {
@@ -225,6 +227,13 @@ public class Shooter extends SubsystemBase {
     private double calcOutput(double targetRadPerSec) {
         double targetTicksPer100ms = targetRadPerSec * Constants.shooterPulsePerRad / Constants.shooter100msPerS;
         return targetTicksPer100ms; //PID.calculate(getCurrentRadPerSec()) + feedForward.calculate(targetRadPerSec)/Constants.shooterMaxVoltage;
+    }
+    
+    private void handleMANUAL_DISTANCE(){
+        hoodNear();
+        setTargetRadPerSec(150);
+        output = calcOutput(targetRadPerSec);
+        foundDistance = false;
     }
 
     private void handleDISABLED() {
@@ -266,7 +275,7 @@ public class Shooter extends SubsystemBase {
 
     private void handleSHOOTING_NEAR() {
         hoodNear();
-        setTargetRadPerSec(getRadPerSecFromDistance(targetDistance));
+        setTargetRadPerSec(150);
         output = calcOutput(targetRadPerSec);
         recentDistance = targetDistance;
         recentRadPerSec = targetRadPerSec;
@@ -341,25 +350,25 @@ public class Shooter extends SubsystemBase {
         return changeInSpeed() > Constants.shooterChangeInSpeedShot;
     }
 
-    private void sendToDashboard() {
-        targetRadPerSec = readRadPerSec.getDouble(1.0);
+    //private void sendToDashboard() {
+        // targetRadPerSec = readRadPerSec.getDouble(1.0);
         //currentFlywheelSpeedEntry.setDouble(getCurrentRadPerSec());
-        targetFlywheelSpeedEntry.setDouble(motor1.getMotorOutputVoltage());
+        // targetFlywheelSpeedEntry.setDouble(motor1.getMotorOutputVoltage()); UNCOMMENT MAYBE
         //readyToFireEntry.setBoolean(readyToFire());
-        stateEntry.setString(currentState.getName());
-        ticksEntry.setDouble(getCurrentRadPerSec());
-        targetVEntry.setDouble(calcOutput(targetRadPerSec));
-        limelightDistance.setDouble(m_eye.getDistanceFromTarget());
-        sensorValue.setDouble(motor1.getSelectedSensorVelocity());
-        targetRPM.setDouble(targetRadPerSec*60/(2*Math.PI));
-        outputRPM.setDouble(ticksEntry.getDouble(0)*60/(2*Math.PI));
-    }
+        // stateEntry.setString(currentState.getName());//
+        // ticksEntry.setDouble(getCurrentRadPerSec());
+        // targetVEntry.setDouble(calcOutput(targetRadPerSec));
+        // limelightDistance.setDouble(m_eye.getDistanceFromTarget());
+        // sensorValue.setDouble(motor1.getSelectedSensorVelocity());
+        // targetRPM.setDouble(targetRadPerSec*60/(2*Math.PI));
+        // outputRPM.setDouble(ticksEntry.getDouble(0)*60/(2*Math.PI));
+    //}
 
     @Override
     public void periodic() {
         previousRadPerSec = getCurrentRadPerSec();
         handleStates();
         runMotors(output);
-        sendToDashboard();
+        //sendToDashboard();
     }
 }

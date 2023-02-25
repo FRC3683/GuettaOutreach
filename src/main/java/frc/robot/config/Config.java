@@ -52,6 +52,16 @@ public class Config {
         driveMotorLeft2 = new CANSparkMax(13, MotorType.kBrushless);
         driveMotorRight1 = new CANSparkMax(2, MotorType.kBrushless);
         driveMotorRight2 = new CANSparkMax(3, MotorType.kBrushless);
+
+        driveMotorLeft1.clearFaults();
+        driveMotorLeft2.clearFaults();
+        driveMotorRight1.clearFaults();
+        driveMotorRight2.clearFaults();
+
+        driveMotorLeft1.setSmartCurrentLimit(50);
+        driveMotorLeft2.setSmartCurrentLimit(50);
+        driveMotorRight1.setSmartCurrentLimit(50);
+        driveMotorRight2.setSmartCurrentLimit(50);
       
     //     driveLeftEnc = new Encoder(2, 3);
     //     driveLeftEnc.setDistancePerPulse(1.0 / Constants.driveTicksPerInchLeft);
@@ -60,9 +70,9 @@ public class Config {
     //     driveRightEnc.setDistancePerPulse(1.0 / Constants.driveTicksPerInchRight);
     //     driveRightEnc.setReverseDirection(true);
       
-        intakeRollerMotor = new VictorSPX(11);
-        intakePiston = new Solenoid(PneumaticsModuleType.CTREPCM, 2);
-        intakeConveyorMotor = new VictorSPX(9);
+        intakeRollerMotor = new VictorSPX(9);
+        intakePiston = new Solenoid(PneumaticsModuleType.CTREPCM, 1);
+        intakeConveyorMotor = new VictorSPX(10);
         intakeConveyorMotor.setNeutralMode(NeutralMode.Brake);
         
         shooterMotor1 = new TalonSRX(1);
@@ -87,7 +97,7 @@ public class Config {
         shooterMotor1.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_50Ms);
         shooterMotor1.configVelocityMeasurementWindow(64);
 
-        shooterHoodPiston = new Solenoid(PneumaticsModuleType.CTREPCM, 1);
+        shooterHoodPiston = new Solenoid(PneumaticsModuleType.CTREPCM, 2);
     }
 
     public static Config getInstance() {

@@ -43,7 +43,7 @@ public class Drive extends CommandBase {
   @Override
   public void execute() {
 
-    if(oi.getRightTriggerDriver() > 0.5){
+    if(1==2/*oi.getRightTriggerDriver() > 0.5*/){
       if(!Robot.m_driveTrain.foundAngle()){
         Robot.m_driveTrain.setState(State.FINDING_ANGLE);
         //TODO: Vibrate Controller until angle is found
@@ -59,14 +59,14 @@ public class Drive extends CommandBase {
     if (Robot.m_driveTrain.getState() == State.OPEN_LOOP) {
       switch (dMode) {
       case ARCADE_ONE_STICK:
-        X = MathUtils.squaredInput(oi.getXLeftDriver());
-        Y = MathUtils.squaredInput(oi.getYLeftDriver());
+        X = 0;//MathUtils.squaredInput(oi.getXLeftDriver());
+        Y = 0;//MathUtils.squaredInput(oi.getYLeftDriver());
         leftOutput = MathUtils.calcLeftDrive(Y, X);
         rightOutput = MathUtils.calcRightDrive(Y, X);
         break;
       case ARCADE_TWO_STICK:
-        X = MathUtils.squaredInput(oi.getXRightDriver());
-        Y = MathUtils.squaredInput(oi.getYLeftDriver());
+        X = MathUtils.squaredInput(oi.getYLeftDriver())*0.5;
+        Y = MathUtils.squaredInput(oi.getXRightDriver())*0.5;
         leftOutput = MathUtils.calcLeftDrive(Y, X);
         rightOutput = MathUtils.calcRightDrive(Y, X);
         break;
